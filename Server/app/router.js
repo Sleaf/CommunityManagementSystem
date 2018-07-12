@@ -2,9 +2,6 @@
 const path = require('path');
 const fs = require('fs');
 
-/**
- * @param {Egg.Application} app - egg application
- */
 module.exports = app => {
   const {router, controller} = app;
 
@@ -17,8 +14,9 @@ module.exports = app => {
 
   /*不需要登录验证*/
   router
-    .post('/api/register', controller.user.register)
-    .post('/api/login', controller.user.login);
+    .post('/api/register', controller.entrance.register)
+    .post('/api/login', controller.entrance.login)
+    .post('/api/logout', controller.entrance.logout);
 
   /*需要登录验证*/
   router
@@ -27,5 +25,5 @@ module.exports = app => {
       if (ctx.session.username == null) ctx.status = 403;
       else await next();
     })
-
+    .get('/api/community', controller.user.getMyCommunity)
 };
