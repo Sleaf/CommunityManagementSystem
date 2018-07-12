@@ -3,46 +3,52 @@
 const Controller = require('egg').Controller;
 
 class UserController extends Controller {
-  /*登录*/
-  async login(ctx) {
-    const payload = ctx.request.body;
-    const result = await ctx.service.user.verify(payload.username, payload.password);
-    if (result) {
-      // 修改 Session 的值
-      ctx.session = {
-        username: payload.username,
-        role    : result.role
-      };
-      ctx.body = {
-        code: 200,
-        data: {
-          role: result.role
-        }
-      };
-    } else {
-      ctx.body = {
-        code: 400,
-        msg : '用户名不存在或密码错误'
-      };
-    }
-  }
-
-  /*登出*/
-  async logout(ctx) {
-    ctx.session = null;
+  /*获取当前用户下所有社团信息*/
+  async getMyCommunity(ctx) {
+    const result = await ctx.service.community.getUserCommunity(ctx.session.user_id);
     ctx.body = {
-      code: 200,
-      msg : '登出成功'
+      code: result ? 200 : 400,
+      data: result,
+      msg : result ? undefined : '获取失败'
     };
   }
 
-  /*注册*/
-  async register(ctx) {
+  /*提交社团创建申请*/
+  async createCommunity(ctx) {
     const payload = ctx.request.body;
-    const result = await ctx.service.user.create(payload.username, payload.password);
+    const result = await ctx.service.community.createCommunity(ctx.session.user_id, payload.name, payload.description);
     ctx.body = {
       code: result ? 200 : 400,
-      msg : result ? '注册成功' : '注册失败'
+      msg : result ? undefined : '申请失败'
+    };
+  }
+
+  /*提交社团信息修改申请*/
+  async modifyCommunityInfo(ctx) {
+    const payload = ctx.request.body;
+    const result = await ctx.service.communityModifyInfoApplication.createCommunityModifyInfoApplication(ctx.session.user_id, payload.community_id, payload.name, payload.description);
+    ctx.body = {
+      code: result ? 200 : 400,
+      msg : result ? undefined : '申请失败'
+    };
+  }
+
+  /*获取我的所有信息申请*/
+  async getMyModifyCommunityInfoApplication(ctx) {
+    const result = await ctx.service.communityModifyInfoApplication.getUserCommunityModifyInfoApplication(ctx.session.user_id);
+    ctx.body = {
+      code: 200,
+      data: result,
+    };
+  }
+
+  /*场地申请*/
+  async applyActivityField(ctx) {
+    const payload = ctx.request.body;
+    const result = await ctx.service.activityField.applyActivityField(payload.field_id, payload.community_id);
+    ctx.body = {
+      code: result ? 200 : 400,
+      msg : result ? undefined : '申请失败'
     };
   }
 }

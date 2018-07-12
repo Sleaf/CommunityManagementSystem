@@ -26,4 +26,5 @@ module.exports = app => {
       else await next();
     })
     .get('/api/community', controller.user.getMyCommunity)
+    .post('/api/community', controller.user.createCommunity)
 };
