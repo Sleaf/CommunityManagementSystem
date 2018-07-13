@@ -38,7 +38,7 @@ module.exports = app => {
     })
     .get('/api/allCommunity', controller.admin.getAllCommunity)
     .post('/api/allCommunity/pass', controller.admin.passCommunityApplication)
-    .post('/api/allCommunity/pass', controller.admin.rejectCommunityApplication)
+    .post('/api/allCommunity/reject', controller.admin.rejectCommunityApplication)
     .get('/api/allCommunity/mod', controller.admin.getAllCommunityModifyInfoApplication)
     .post('/api/allCommunity/mod/pass', controller.admin.passCommunityModifyInfoApplication)
     .post('/api/allCommunity/mod/reject', controller.admin.rejectCommunityModifyInfoApplication)
