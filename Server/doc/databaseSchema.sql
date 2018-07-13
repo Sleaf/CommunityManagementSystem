@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Community (
   name         VARCHAR(128) NOT NULL,
   description  VARCHAR(1024),
   rank         INT          NOT NULL DEFAULT 0,
-  stastus      VARCHAR(8)   NOT NULL DEFAULT 'PADDING', /* 已通过：USABLE  拒绝申请：REJECTED   不可用：DISABLE */
+  status      VARCHAR(8)   NOT NULL DEFAULT 'PADDING', /* 已通过：USABLE  拒绝申请：REJECTED   不可用：DISABLE */
   id           INT                   AUTO_INCREMENT PRIMARY KEY,
   created_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update_time  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -64,4 +64,4 @@ CREATE TABLE IF NOT EXISTS ActivityFieldApplication (
 );
 
 /*插入管理员账户*/
-INSERT INTO User VALUES ('admin', 'admin', 'ADMIN', 0, NOW(), NOW());
+INSERT INTO User VALUES ('admin', '$2b$10$tP4KjSvwYHUfH40UlkrUSeh62g.O8X3j9KVqcXRXIwRI6lGPHbr7i', 'ADMIN', 0, NOW(), NOW());

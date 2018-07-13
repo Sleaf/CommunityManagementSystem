@@ -6,9 +6,16 @@ class UserController extends Controller {
   /*获取当前用户下所有社团信息*/
   async getMyCommunity(ctx) {
     const result = await ctx.service.community.getUserCommunity(ctx.session.user_id);
+    let community = null;
+    for (const i of result) {
+      if (i.status !== 'REJECT' || i.status !== 'DISABLED') {
+        community = i;
+        break;
+      }
+    }
     ctx.body = {
       code: result ? 200 : 400,
-      data: result,
+      data: community,
       msg : result ? undefined : '获取失败'
     };
   }
@@ -16,6 +23,15 @@ class UserController extends Controller {
   /*提交社团创建申请*/
   async createCommunity(ctx) {
     const payload = ctx.request.body;
+    for (const res of await ctx.service.community.getUserCommunity(ctx.session.user_id)) {
+      if (res.status !== 'REJECT' || i.status !== 'DISABLED') {
+        ctx.body = {
+          code: 400,
+          msg : '一人只可担任一个社团的社长！'
+        };
+        return;
+      }
+    }
     const result = await ctx.service.community.createCommunity(ctx.session.user_id, payload.name, payload.description);
     ctx.body = {
       code: result ? 200 : 400,

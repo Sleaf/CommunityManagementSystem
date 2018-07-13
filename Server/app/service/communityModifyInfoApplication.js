@@ -5,6 +5,7 @@ class CommunityModifyInfoApplicationService extends Service {
   /*提交社团信息修改申请*/
   async createCommunityModifyInfoApplication(user_id, community_id, name, description) {
     const repResult = await this.app.mysql.get('CommunityModifyInfoApplication', {user_id, status: 'PADDING'});
+    //fixme 检查是不是社长
     if (repResult != null) {
       const result = await this.app.mysql.insert('CommunityModifyInfoApplication', {
         user_id,
