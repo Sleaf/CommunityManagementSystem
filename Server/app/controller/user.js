@@ -33,9 +33,18 @@ class UserController extends Controller {
     };
   }
 
-  /*获取我的所有信息申请*/
+  /*获取我的所有信息修改申请*/
   async getMyModifyCommunityInfoApplication(ctx) {
     const result = await ctx.service.communityModifyInfoApplication.getUserCommunityModifyInfoApplication(ctx.session.user_id);
+    ctx.body = {
+      code: 200,
+      data: result,
+    };
+  }
+
+  /*获取我的场地申请*/
+  async getMyCommunityActivityField(ctx) {
+    const result = await ctx.service.communityModifyInfoApplication.getCommunityActivityField(ctx.session.community_id);
     ctx.body = {
       code: 200,
       data: result,

@@ -27,4 +27,26 @@ module.exports = app => {
     })
     .get('/api/community', controller.user.getMyCommunity)
     .post('/api/community', controller.user.createCommunity)
+    .get('/api/community/mod', controller.user.getMyModifyCommunityInfoApplication)
+    .post('/api/community/mod', controller.user.modifyCommunityInfo)
+    .get('/api/activity', controller.user.getMyCommunityActivityField)
+    .post('/api/activity', controller.user.applyActivityField)
+    .all('*', async (ctx, next) => {
+      //验证用户组
+      if (ctx.session.role !== 'ADMIN') ctx.status = 403;
+      else await next();
+    })
+    .get('/api/allCommunity', controller.admin.getAllCommunity)
+    .post('/api/allCommunity/pass', controller.admin.passCommunityApplication)
+    .post('/api/allCommunity/pass', controller.admin.rejectCommunityApplication)
+    .get('/api/allCommunity/mod', controller.admin.getAllCommunityModifyInfoApplication)
+    .post('/api/allCommunity/mod/pass', controller.admin.passCommunityModifyInfoApplication)
+    .post('/api/allCommunity/mod/reject', controller.admin.rejectCommunityModifyInfoApplication)
+    .post('/api/freezeCommunity', controller.admin.freezeCommunity)
+    .post('/api/thawCommunity', controller.admin.thawCommunity)
+    .post('/api/rankCommunity', controller.admin.rankCommunity)
+    .get('/api/allActivity', controller.admin.getAllActivityField)
+    .post('/api/allActivity', controller.admin.createActivityField)
+    .post('/api/allActivity/pass', controller.admin.passActivityFieldApplication)
+    .post('/api/allActivity/reject', controller.admin.rejectActivityFieldApplication)
 };

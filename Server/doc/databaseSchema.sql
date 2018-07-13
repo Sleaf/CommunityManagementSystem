@@ -26,11 +26,12 @@ CREATE TABLE IF NOT EXISTS Community (
   ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (owner_id) REFERENCES User (id)
 );
+
 CREATE TABLE IF NOT EXISTS CommunityModifyInfoApplication (
   name         VARCHAR(128) NOT NULL,
   description  VARCHAR(1024),
   community_id INT          NOT NULL,
-  user_id INT          NOT NULL,
+  user_id      INT          NOT NULL,
   status       VARCHAR(8)   NOT NULL DEFAULT 'PADDING', /* 允许：PASSED 拒绝：REJECTED */
   id           INT                   AUTO_INCREMENT PRIMARY KEY,
   created_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -61,3 +62,6 @@ CREATE TABLE IF NOT EXISTS ActivityFieldApplication (
   FOREIGN KEY (field_id) REFERENCES ActivityField (id),
   FOREIGN KEY (community_id) REFERENCES Community (id)
 );
+
+/*插入管理员账户*/
+INSERT INTO User VALUES ('admin', 'admin', 'ADMIN', 0, NOW(), NOW());
