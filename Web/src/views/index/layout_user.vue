@@ -9,8 +9,17 @@
       <el-main>
         <div v-if="myCommunity == null"></div>
         <!--申请未通过-->
-        <el-card class="none-content" v-else-if="myCommunity.name == null || myCommunity.status==='PADDING' ">
-          <div slot="header">{{myCommunity.status==='PADDING'?'你的社团正在审核！':'你名下还没有社团呢，填写以下信息马上申请！'}}</div>
+        <el-card class="none-content"
+                 v-else-if="myCommunity.status == null ||
+                 myCommunity.status==='PADDING' ||
+                 myCommunity.status==='DISABLED' ||
+                 myCommunity.status==='REJECTED'">
+          <div slot="header">{{myCommunity.status==='PADDING'?'你的社团申请已经提交成功！':'你名下还没有社团呢，填写以下信息马上申请！'}}</div>
+          <div class="tips" v-if="myCommunity.old_name">
+            <i class="el-icon-info"></i>
+            你的上一个社团【{{myCommunity.old_name}}】
+            {{ myCommunity.status==='DISABLED'?'已被禁用！':'申请已被拒绝！'}}
+          </div>
           <el-form class="newCommunityForm" ref="myCommunity" :rules="newCommunityRules" label-position="left"
                    :model="myCommunity">
             <el-form-item label="社团名称" prop="name">
@@ -64,14 +73,13 @@
     },
     methods: {
       applyCommunity() {
-        this.$refs['newCommunity'].validate((valid) => {
+        this.$refs['myCommunity'].validate((valid) => {
           if (valid) {
             this.$.ajax.post('/community', JSON.stringify({
               name       : this.myCommunity.name,
               description: this.myCommunity.description,
             })).then(res => {
-              this.$message.success('提交申请成功！请等待管理员审核');
-              this.myCommunity.status = 'PADDING';
+              this.$router.go(0);
             }, err => {
               this.$message.error('提交申请失败：' + err.msg);
             })
@@ -105,6 +113,11 @@
       this.$.ajax.get('/community').then(res => {
         console.log('社团信息：', res);
         this.myCommunity = res || {};
+        if (this.myCommunity.status === 'DISABLED' || this.myCommunity.status === 'REJECTED') {
+          this.myCommunity.old_name = this.myCommunity.name;
+          this.myCommunity.name = '';
+          this.myCommunity.description = '';
+        }
       }, err => {
         this.$message.error('初始化失败：', err.msg);
       }).finally(_ => {
@@ -149,6 +162,10 @@
       font-size 1.5em
       color darkgray
       align-items center
+      .tips
+        font-size .5em
+        color darkgray
+        font-style italic
       .newCommunityForm
         width 25em
       .apply-btn

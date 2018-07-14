@@ -1,5 +1,5 @@
 const RouterConfig = {
-  // mode: 'history',
+  mode: 'history',
   routes: [
     {
       name: 'index_user',
@@ -15,11 +15,6 @@ const RouterConfig = {
           name: 'allCommunity',
           path: 'allCommunity',
           component: resolve => require(['./views/index/admin/allCommunity'], resolve),
-        },
-        {
-          name: 'allCommunityCheck',
-          path: 'allCommunityCheck',
-          component: resolve => require(['./views/index/admin/allCommunityCheck'], resolve),
         },
         {
           name: 'allCommunityMod',

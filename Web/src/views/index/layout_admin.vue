@@ -7,16 +7,38 @@
     <el-container>
       <!--nav-->
       <el-aside width="13em">
-        <el-menu :default-openeds="['management']">
-          <!--学校管理-->
-          <el-submenu index="management">
+        <el-menu :default-openeds="['community','activity']">
+          <!--社团管理-->
+          <el-submenu index="community">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>社团管理</span>
             </template>
-            <router-link v-for="item of menuItems" :to="{name:item.label}" :key="item.label">
-              <el-menu-item :index="item.label">
-                {{item.name}}
+            <router-link :to="{name:'allCommunity'}">
+              <el-menu-item index="allCommunity">
+                所有社团
+              </el-menu-item>
+            </router-link>
+            <router-link :to="{name:'allCommunityMod'}">
+              <el-menu-item index="allCommunityMod">
+                待审核的社团信息修改
+              </el-menu-item>
+            </router-link>
+          </el-submenu>
+          <!--活动场地管理-->
+          <el-submenu index="activity">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>活动场地管理</span>
+            </template>
+            <router-link :to="{name:'allActivity'}">
+              <el-menu-item index="allActivity">
+                所有活动场地
+              </el-menu-item>
+            </router-link>
+            <router-link :to="{name:'allActivityCheck'}">
+              <el-menu-item index="allActivityCheck">
+                活动场地审核
               </el-menu-item>
             </router-link>
           </el-submenu>
@@ -43,28 +65,7 @@
     name    : 'layout',
     data() {
       return {
-        menuItems: [
-          {
-            label: 'allCommunity',
-            name : '所有已成立社团'
-          },
-          {
-            label: 'allCommunityCheck',
-            name : '待审核所有社团'
-          },
-          {
-            label: 'allCommunityMod',
-            name : '待审核的社团信息修改'
-          },
-          {
-            label: 'allActivity',
-            name : '活动场地管理'
-          },
-          {
-            label: 'allActivityCheck',
-            name : '活动场地审核'
-          },
-        ]
+
       }
     },
     computed: {},
