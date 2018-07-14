@@ -74,6 +74,15 @@ class AdminController extends Controller {
   /*解冻社团*/
   async thawCommunity(ctx) {
     const payload = ctx.request.body;
+    for (const res of await ctx.service.community.getUserCommunity(payload.owner_id)) {
+      if (res.status !== 'REJECTED' && res.status !== 'DISABLED') {
+        ctx.body = {
+          code: 400,
+          msg : '一人只可担任一个社团的社长！'
+        };
+        return;
+      }
+    }
     const result = await ctx.service.community.thawCommunity(payload.community_id);
     ctx.body = {
       code: result ? 200 : 400,
@@ -101,9 +110,18 @@ class AdminController extends Controller {
     };
   }
 
-  /*查看所有社团信息修改申请*/
+  /*查看所有活动场地*/
   async getAllActivityField(ctx) {
     const result = await ctx.service.activityField.getAllActivityField();
+    ctx.body = {
+      code: 200,
+      data: result
+    };
+  }
+
+  /*查看所有活动场地申请*/
+  async getAllActivityFieldApplication(ctx) {
+    const result = await ctx.service.activityField.getAllActivityFieldApplication();
     ctx.body = {
       code: 200,
       data: result

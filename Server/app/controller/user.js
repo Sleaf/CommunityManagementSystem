@@ -8,11 +8,12 @@ class UserController extends Controller {
     const result = await ctx.service.community.getUserCommunity(ctx.session.user_id);
     let community = null;
     for (const i of result) {
-      if (i.status !== 'REJECT' || i.status !== 'DISABLED') {
+      if (i.status !== 'REJECTED' && i.status !== 'DISABLED') {
         community = i;
         break;
       }
     }
+    if (community == null) community = result.pop();
     ctx.body = {
       code: result ? 200 : 400,
       data: community,
@@ -24,7 +25,7 @@ class UserController extends Controller {
   async createCommunity(ctx) {
     const payload = ctx.request.body;
     for (const res of await ctx.service.community.getUserCommunity(ctx.session.user_id)) {
-      if (res.status !== 'REJECT' || i.status !== 'DISABLED') {
+      if (res.status !== 'REJECTED' && res.status !== 'DISABLED') {
         ctx.body = {
           code: 400,
           msg : '一人只可担任一个社团的社长！'

@@ -31,6 +31,7 @@ module.exports = app => {
     .post('/api/community/mod', controller.user.modifyCommunityInfo)
     .get('/api/activity', controller.user.getMyCommunityActivityField)
     .post('/api/activity', controller.user.applyActivityField)
+    .get('/api/allActivity', controller.admin.getAllActivityField)
     .all('*', async (ctx, next) => {
       //验证用户组
       if (ctx.session.role !== 'ADMIN') ctx.status = 403;
@@ -42,11 +43,11 @@ module.exports = app => {
     .get('/api/allCommunity/mod', controller.admin.getAllCommunityModifyInfoApplication)
     .post('/api/allCommunity/mod/pass', controller.admin.passCommunityModifyInfoApplication)
     .post('/api/allCommunity/mod/reject', controller.admin.rejectCommunityModifyInfoApplication)
-    .post('/api/freezeCommunity', controller.admin.freezeCommunity)
-    .post('/api/thawCommunity', controller.admin.thawCommunity)
-    .post('/api/rankCommunity', controller.admin.rankCommunity)
-    .get('/api/allActivity', controller.admin.getAllActivityField)
+    .post('/api/allCommunity/freeze', controller.admin.freezeCommunity)
+    .post('/api/allCommunity/thaw', controller.admin.thawCommunity)
+    .post('/api/allCommunity/rank', controller.admin.rankCommunity)
     .post('/api/allActivity', controller.admin.createActivityField)
+    .get('/api/allActivityApplication', controller.admin.getAllActivityFieldApplication)
     .post('/api/allActivity/pass', controller.admin.passActivityFieldApplication)
     .post('/api/allActivity/reject', controller.admin.rejectActivityFieldApplication)
 };

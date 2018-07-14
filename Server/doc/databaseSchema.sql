@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS Community (
 CREATE TABLE IF NOT EXISTS CommunityModifyInfoApplication (
   name         VARCHAR(128) NOT NULL,
   description  VARCHAR(1024),
+  new_name         VARCHAR(128) NOT NULL,
+  new_description  VARCHAR(1024),
   community_id INT          NOT NULL,
   user_id      INT          NOT NULL,
   status       VARCHAR(8)   NOT NULL DEFAULT 'PADDING', /* 允许：PASSED 拒绝：REJECTED */

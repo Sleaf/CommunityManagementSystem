@@ -10,7 +10,7 @@ class CommunityService extends Service {
 
   /*通过社团申请*/
   async passCommunityApplication(id) {
-    const result = await this.app.mysql.update('Community', {id, status: 'PASSED'});
+    const result = await this.app.mysql.update('Community', {id, status: 'USABLE'});
     return result.affectedRows === 1;
   }
 
@@ -22,7 +22,12 @@ class CommunityService extends Service {
 
   /*获取所有社团*/
   async getAllCommunity() {
-    return await this.app.mysql.select('Community');
+    const sqlStr = `
+      SELECT C.id,C.name,C.description,C.rank,C.status,C.owner_id,U.username AS owner_name,  C.created_time,C.update_time
+      FROM Community AS C,User AS U
+      WHERE C.owner_id = U.id`;
+    const sqlParams = [];
+    return await this.app.mysql.query(sqlStr, sqlParams);
   }
 
   /*获取指定社团信息*/
@@ -39,12 +44,13 @@ class CommunityService extends Service {
 
   /*冻结社团*/
   async freezeCommunity(id) {
-    const result = await this.app.mysql.update('Community', {id, status: 'DISABLE'});
+    const result = await this.app.mysql.update('Community', {id, status: 'DISABLED'});
     return result.affectedRows === 1;
   }
 
   /*解冻社团*/
   async thawCommunity(id) {
+
     const result = await this.app.mysql.update('Community', {id, status: 'USABLE'});
     return result.affectedRows === 1;
   }
