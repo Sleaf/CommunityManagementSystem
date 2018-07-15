@@ -1,5 +1,5 @@
 'use strict';
-const mysql = require('../../accounts').mysql;
+const mysql = require('../accounts').mysql;
 
 module.exports = appInfo => {
   const config = exports = {};

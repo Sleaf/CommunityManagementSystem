@@ -55,13 +55,13 @@ class UserController extends Controller {
     const result = await ctx.service.communityModifyInfoApplication.getUserCommunityModifyInfoApplication(ctx.session.user_id);
     ctx.body = {
       code: 200,
-      data: result,
+      data: result.pop(),
     };
   }
 
   /*获取我的场地申请*/
   async getMyCommunityActivityField(ctx) {
-    const result = await ctx.service.communityModifyInfoApplication.getCommunityActivityField(ctx.session.community_id);
+    const result = await ctx.service.activityField.getCommunityActivityField(ctx.session.user_id);
     ctx.body = {
       code: 200,
       data: result,

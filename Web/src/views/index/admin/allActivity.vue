@@ -53,13 +53,7 @@
               name: this.newField.name,
               date: this.newField.date.toLocaleDateString(),
             })).then(res => {
-              this.$message.success('新场地创建成功！');
-              this.activities.unshift({
-                ...this.newField,
-                id    : '（刷新后获得）',
-                status: '空闲',
-              });
-              this.newField = {};
+              this.$router.go(0);
             }, err => {
               this.$message.error('提交申请失败：' + err.msg);
             })

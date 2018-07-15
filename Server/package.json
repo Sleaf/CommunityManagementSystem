@@ -22,7 +22,7 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-NTM_ST",
+    "start": "egg-scripts start --daemon --title=egg-server-NTM_ST ",
     "stop": "egg-scripts stop --title=egg-server-NTM_ST",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",

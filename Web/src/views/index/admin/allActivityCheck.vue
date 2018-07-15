@@ -1,9 +1,10 @@
 <template>
   <el-table :data="activityApplications" style="width: 100%">
+    <el-table-column prop="created_time" label="申请日期" width="150"></el-table-column>
     <el-table-column prop="field_id" label="场地编号"></el-table-column>
     <el-table-column prop="field_name" label="场地名称"></el-table-column>
+    <el-table-column prop="date" label="活动日期" width="150"></el-table-column>
     <el-table-column prop="community_name" label="申请社团名称"></el-table-column>
-    <el-table-column prop="date" label="活动日期"></el-table-column>
     <el-table-column label="申请状态" width="180">
       <template slot-scope="scope">
         <div v-if="scope.row.status==='PADDING'">
@@ -63,7 +64,11 @@
     created() {
       this.$.ajax.get('/allActivityApplication').then(res => {
         console.log('所有活动申请：', res);
-        this.activityApplications = res.reverse();
+        this.activityApplications = res.map(i => ({
+          ...i,
+          created_time: new Date(i.created_time).format('YYYY-MM-DD hh:mm'),
+          date        : new Date(i.date).format('YYYY年MM月DD日')
+        })).reverse();;
       })
     }
   }

@@ -1,15 +1,16 @@
 'use strict';
 const path = require('path');
-const fs = require('fs');
+const fs = require('mz/fs');
 
 module.exports = app => {
   const {router, controller} = app;
 
   /*默认返回前端静态网页*/
   router.get(/^(?!\/api)/, async ctx => {
-    const file = path.resolve(ctx.app.config.static.dir, 'index.html');
     ctx.set('Content-Type', 'text/html; charset=utf-8');
-    ctx.body = fs.readFileSync(file);
+    const tpl = path.join(this.app.config.static.dir, 'index.html');
+// 如果没变化的话可以 cache 起来，不用每次 read
+    this.ctx.body = fs.readFile(tpl, 'utf-8');
   });
 
   /*不需要登录验证*/

@@ -30,7 +30,7 @@
           <el-button type="danger" @click="rejectApplication(scope.row.id,scope.$index)">拒绝</el-button>
         </div>
         <div v-else-if="scope.row.status==='USABLE'">
-          <el-button size="medium" @click="rankCommunity(scope.row.id,scope.$index)">修改评级</el-button>
+          <el-button size="medium" @click="rankCommunity(scope.row,scope.$index)">修改评级</el-button>
 
           <el-button size="medium" type="danger" @click="freezeCommunity(scope.row.id,scope.$index)">
             禁用社团
@@ -48,6 +48,8 @@
 </template>
 
 <script>
+  import rankDialog from './rankDialog'
+
   export default {
     name   : "allCommunity",
     data() {
@@ -112,8 +114,19 @@
           })
         }, cancel => null)
       },
-      rankCommunity(id, index) {
-
+      rankCommunity(row, index) {
+        const h = this.$createElement;
+        this.$msgbox({
+          title            : `【${row.name}】 - 社团评级`,
+          message          : h(rankDialog, {
+            props: {
+              rankLevel   : row.rank || '未评级',
+              community_id: row.id
+            }
+          }),
+          showConfirmButton: false,
+          showCancelButton : false,
+        }).then(confirm => null, cancel => null);
       },
       thawCommunity(id, owner_id, index) {
         this.$confirm('解冻后恢复社团功能（当该用户当前掌管某个社团或申请某个社团时解冻将失效）', '确认冻结？').then(_ => {

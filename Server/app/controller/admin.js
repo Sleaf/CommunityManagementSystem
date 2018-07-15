@@ -106,13 +106,14 @@ class AdminController extends Controller {
     const result = await ctx.service.activityField.createActivityField(payload.name, payload.date);
     ctx.body = {
       code: result ? 200 : 400,
-      msg : result ? undefined : '评级失败'
+      msg : result ? undefined : '创建失败'
     };
   }
 
   /*查看所有活动场地*/
   async getAllActivityField(ctx) {
-    const result = await ctx.service.activityField.getAllActivityField();
+    const query = ctx.request.query;
+    const result = await ctx.service.activityField.getAllActivityField(query.date);
     ctx.body = {
       code: 200,
       data: result

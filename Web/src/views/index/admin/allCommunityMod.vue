@@ -26,8 +26,8 @@
     <el-table-column label="申请状态" width="180">
       <template slot-scope="scope">
         <div v-if="scope.row.status==='PADDING'">
-          <el-button type="success" @click="passApplication(scope.row.id,scope.$index)">通过</el-button>
-          <el-button type="danger" @click="rejectApplication(scope.row.id,scope.$index)">拒绝</el-button>
+          <el-button type="success" @click="passApplication(scope.row.community_id,scope.$index)">通过</el-button>
+          <el-button type="danger" @click="rejectApplication(scope.row.community_id,scope.$index)">拒绝</el-button>
         </div>
         <div v-else>
           {{scope.row.status|statusString}}
@@ -56,10 +56,10 @@
       }
     },
     methods: {
-      passApplication(id,index) {
+      passApplication(community_id,index) {
         this.$confirm('通过后将修改现有社团资料', '确认通过？').then(_ => {
           this.$.ajax.post('/allCommunity/mod/pass', JSON.stringify({
-            community_id: id
+            community_id: community_id
           })).then(res => {
             this.$message.success('通过成功！');
             this.communityModApplications[index].status = 'PASSED';
@@ -68,10 +68,10 @@
           })
         }, cancel => null)
       },
-      rejectApplication(id, index) {
+      rejectApplication(community_id, index) {
         this.$confirm('拒绝后该社团需再次申请', '确认拒绝?').then(_ => {
           this.$.ajax.post('/allCommunity/mod/reject', JSON.stringify({
-            community_id: id
+            community_id: community_id
           })).then(res => {
             this.$message.success('拒绝成功！');
             this.communityModApplications[index].status = 'REJECTED';

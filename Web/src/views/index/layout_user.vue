@@ -41,8 +41,51 @@
         </el-card>
         <!--申请通过-->
         <div v-else-if="myCommunity.status==='USABLE'">
-          <p>社团名称：{{myCommunity.name}}</p>
-          <p>社团描述：{{myCommunity.description}}</p>
+          <!--社团信息-->
+          <el-card>
+            <span style="font-weight: bolder;font-size: 1.5em" slot="header">社团信息</span>
+            <el-form class="communityInfo" ref="communityInfo" :rules="newCommunityRules" label-position="left"
+                     :model="myCommunity">
+              <el-form-item label="社团名称：" prop="name">
+                <el-input class="name" placeholder="请输入社团名称..." v-model="myCommunity.name"
+                          v-if="modMode"></el-input>
+                <div v-else>
+                  {{myCommunity.name}}
+                  <span class="modTag" v-if="myModApplication&&myModApplication.new_name">
+                  <i class="el-icon-d-arrow-right"></i>
+                  {{myModApplication.new_name}}</span>
+                </div>
+              </el-form-item>
+              <el-form-item label="社团描述：" prop="description">
+                <el-input class="desc" placeholder="请输入社团描述..." type="textarea" resize="none" rows="4"
+                          v-model="myCommunity.description"
+                          v-if="modMode"></el-input>
+                <div v-else>
+                  {{myCommunity.description}}
+                  <span class="modTag" v-if="myModApplication&&myModApplication.new_description">
+                  <i class="el-icon-d-arrow-right"></i>
+                  {{myModApplication.new_description}}</span>
+                </div>
+              </el-form-item>
+              <el-form-item label="社团等级：" prop="rank">
+                {{myCommunity.rank|rank}}
+              </el-form-item>
+              <div style="text-align: center">
+                <el-button-group v-if="modMode">
+                  <el-button type="primary" @click="subMod">提交修改信息</el-button>
+                  <!--<el-button type="primary" @click="subMod">取消修改</el-button>-->
+                </el-button-group>
+                <el-button type="warning" disabled v-else-if="myModApplication&&myModApplication.new_name">修改申请正在审核
+                </el-button>
+                <el-button @click="modMode=true" :disabled="myModApplication==null" v-else>
+                  修改社团信息
+                </el-button>
+              </div>
+            </el-form>
+          </el-card>
+          <!--活动场地申请-->
+          <activityCard :community_id="myCommunity.id" class="activity">
+          </activityCard>
         </div>
       </el-main>
     </el-container>
@@ -54,8 +97,29 @@
 </template>
 
 <script>
+  import activityCard from './user/activityCard'
+
   export default {
-    name   : 'layout_user',
+    name      : 'layout_user',
+    filters   : {
+      rank(value) {
+        switch (String(value)) {
+          case '1':
+            return '一星社团';
+          case '2':
+            return '二星社团';
+          case '3':
+            return '三星社团';
+          case '4':
+            return '四星社团';
+          case '5':
+            return '五星社团';
+          default:
+            return '未评级';
+        }
+      }
+    },
+    components: {activityCard},
     data() {
       return {
         myCommunity      : null,
@@ -68,10 +132,15 @@
             {required: true, message: '请输入社团描述', trigger: 'blur'},
             {max: 150, message: '社团描述长度应不多于150字！', trigger: 'blur'}
           ],
-        }
+          rank       : [
+            {required: true, message: '!!!', trigger: 'blur'},
+          ],
+        },
+        myModApplication : null,
+        modMode          : false,
       }
     },
-    methods: {
+    methods   : {
       applyCommunity() {
         this.$refs['myCommunity'].validate((valid) => {
           if (valid) {
@@ -82,6 +151,21 @@
               this.$router.go(0);
             }, err => {
               this.$message.error('提交申请失败：' + err.msg);
+            })
+          }
+        });
+      },
+      subMod() {
+        this.$refs['communityInfo'].validate((valid) => {
+          if (valid) {
+            this.$.ajax.post('/community/mod', JSON.stringify({
+              community_id: this.myCommunity.id,
+              name        : this.myCommunity.name,
+              description : this.myCommunity.description,
+            })).then(res => {
+              this.$router.go(0)
+            }, err => {
+              this.$message.error('提交信息修改申请失败：' + err.msg);
             })
           }
         });
@@ -118,11 +202,18 @@
           this.myCommunity.name = '';
           this.myCommunity.description = '';
         }
+        if (this.myCommunity.status === 'USABLE') {
+          this.$.ajax.get('/community/mod').then(res => {
+            console.log('社团申请信息：', res);
+            this.myModApplication = res || {};
+          })
+        }
       }, err => {
         this.$message.error('初始化失败：', err.msg);
       }).finally(_ => {
         this.fullscreenLoading = false;
       })
+
 
     },
     mounted() {
@@ -156,7 +247,6 @@
     text-align left
     height 100% -7em
     display flex
-    align-items: center
     justify-content center
     .none-content
       font-size 1.5em
@@ -171,6 +261,22 @@
       .apply-btn
         float right
         margin 1em 1em 2em 0
+
+    .communityInfo
+      width 45em
+      .modTag
+        font-size 1.25em
+        margin 1em
+        &:after
+          content: 'new!';
+          display inline-block
+          line-height 2em
+          color: red;
+          font-size: .6em;
+          vertical-align: top;
+
+    .activity
+      margin-top 1em
 
   .el-footer
     text-align center
