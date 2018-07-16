@@ -40,6 +40,12 @@
     methods: {
       passApplication(id) {
         this.$confirm('通过后将自动拒绝其他选择该场地的社团', '确认通过？').then(_ => {
+          const loading = this.$loading({
+            lock      : true,
+            text      : '提交申请中...',
+            spinner   : 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$.ajax.post('/allActivity/pass', JSON.stringify({
             activity_id: id
           })).then(res => {
@@ -51,17 +57,31 @@
       },
       rejectApplication(id, index) {
         this.$confirm('拒绝后该社团需再次申请', '确认拒绝?').then(_ => {
+          const loading = this.$loading({
+            lock      : true,
+            text      : '提交申请中...',
+            spinner   : 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$.ajax.post('/allActivity/reject', JSON.stringify({
             activity_id: id
           })).then(res => {
             this.activityApplications[index].status = 'REJECTED';
           }, err => {
             this.$message.error('拒绝失败：' + err.msg);
+          }).finally(_=>{
+            loading.close();
           })
         }, cancel => null)
       }
     },
     created() {
+      const loading = this.$loading({
+        lock      : true,
+        text      : '初始化中...',
+        spinner   : 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$.ajax.get('/allActivityApplication').then(res => {
         console.log('所有活动申请：', res);
         this.activityApplications = res.map(i => ({
@@ -69,6 +89,10 @@
           created_time: new Date(i.created_time).format('YYYY-MM-DD hh:mm'),
           date        : new Date(i.date).format('YYYY年MM月DD日')
         })).reverse();;
+      },err=>{
+        this.$message.error('初始化失败：', err.msg);
+      }).finally(_=>{
+        loading.close();
       })
     }
   }

@@ -49,6 +49,12 @@
       createField() {
         this.$refs['newField'].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock      : true,
+              text      : '提交申请中...',
+              spinner   : 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$.ajax.post('/allActivity', JSON.stringify({
               name: this.newField.name,
               date: this.newField.date.toLocaleDateString(),
@@ -62,6 +68,12 @@
       }
     },
     created() {
+      const loading = this.$loading({
+        lock      : true,
+        text      : '初始化中...',
+        spinner   : 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$.ajax.get('/allActivity').then(res => {
         console.log('所有活动场地：', res);
         this.activities = res.map(i => ({
@@ -69,6 +81,10 @@
           date  : new Date(i.date).format('YYYY年MM月DD日'),
           status: i.status === 'IDLE' ? '空闲' : '已占用'//偷懒
         })).reverse();
+      }, err => {
+        this.$message.error('初始化失败：', err.msg);
+      }).finally(_ => {
+        loading.close();
       })
     }
   }

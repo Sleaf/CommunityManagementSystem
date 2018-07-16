@@ -92,6 +92,12 @@
     methods: {
       passApplication(id, index) {
         this.$confirm('通过后该社团将启用', '确认通过？').then(_ => {
+          const loading = this.$loading({
+            lock      : true,
+            text      : '提交申请中...',
+            spinner   : 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$.ajax.post('/allCommunity/pass', JSON.stringify({
             community_id: id
           })).then(res => {
@@ -99,11 +105,19 @@
             this.communities[index].status = 'USABLE';
           }, err => {
             this.$message.error('通过失败：' + err.msg);
+          }).finally(_=>{
+            loading.close();
           })
         }, cancel => null)
       },
       rejectApplication(id, index) {
         this.$confirm('拒绝后该社团需再次申请', '确认拒绝?').then(_ => {
+          const loading = this.$loading({
+            lock      : true,
+            text      : '提交申请中...',
+            spinner   : 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$.ajax.post('/allCommunity/reject', JSON.stringify({
             community_id: id
           })).then(res => {
@@ -111,6 +125,8 @@
             this.communities[index].status = 'REJECTED';
           }, err => {
             this.$message.error('拒绝失败：' + err.msg);
+          }).finally(_=>{
+            loading.close();
           })
         }, cancel => null)
       },
@@ -130,6 +146,12 @@
       },
       thawCommunity(id, owner_id, index) {
         this.$confirm('解冻后恢复社团功能（当该用户当前掌管某个社团或申请某个社团时解冻将失效）', '确认冻结？').then(_ => {
+          const loading = this.$loading({
+            lock      : true,
+            text      : '提交申请中...',
+            spinner   : 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$.ajax.post('/allCommunity/thaw', JSON.stringify({
             community_id: id,
             owner_id    : owner_id,
@@ -138,11 +160,19 @@
             this.communities[index].status = 'USABLE';
           }, err => {
             this.$message.error('解冻失败：' + err.msg);
+          }).finally(_=>{
+            loading.close();
           })
         }, cancel => null)
       },
       freezeCommunity(id, index) {
         this.$confirm('冻结后社团将不可用', '确认冻结？').then(_ => {
+          const loading = this.$loading({
+            lock      : true,
+            text      : '提交申请中...',
+            spinner   : 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$.ajax.post('/allCommunity/freeze', JSON.stringify({
             community_id: id
           })).then(res => {
@@ -150,14 +180,26 @@
             this.communities[index].status = 'DISABLED';
           }, err => {
             this.$message.error('冻结失败：' + err.msg);
+          }).finally(_=>{
+            loading.close();
           })
         }, cancel => null)
       },
     },
     created() {
+      const loading = this.$loading({
+        lock      : true,
+        text      : '初始化中...',
+        spinner   : 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$.ajax.get('/allCommunity').then(res => {
         console.log('所有社团信息：', res);
         this.communities = res.reverse();
+      },err=>{
+        this.$message.error('初始化失败：', err.msg);
+      }).finally(_=>{
+        loading.close();
       })
     }
   }

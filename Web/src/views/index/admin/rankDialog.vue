@@ -52,7 +52,7 @@
           },
         ],
         formData: {
-          rankLevel: this.rankLevelOrigin || '未评级',
+          rankLevel: '未评级',
         },
         formRule: {
           rankLevel: [
@@ -77,6 +77,9 @@
         })
       }
     },
+    mounted() {
+
+    }
   }
 </script>
 

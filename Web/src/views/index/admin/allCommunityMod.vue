@@ -82,9 +82,19 @@
       }
     },
     created() {
+      const loading = this.$loading({
+        lock      : true,
+        text      : '初始化中...',
+        spinner   : 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$.ajax.get('/allCommunity/mod').then(res => {
         console.log('所有信息修改申请：', res);
         this.communityModApplications = res.reverse();
+      },err=>{
+        this.$message.error('初始化失败：', err.msg);
+      }).finally(_=>{
+        loading.close();
       })
     }
   }

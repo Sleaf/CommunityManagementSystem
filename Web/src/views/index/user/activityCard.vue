@@ -84,6 +84,12 @@
     created() {
       this.updateActivityList();
       /*更新我的申请历史*/
+      const loading = this.$loading({
+        lock      : true,
+        text      : '初始化中...',
+        spinner   : 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$.ajax.get('/activity').then(res => {
         console.log('我的申请信息：', res);
         this.myActivityApplication = res.map(i => ({
@@ -93,6 +99,10 @@
           status      : i.status === 'PADDING' ? '待审核' :
             i.status === 'PASSED' ? '申请通过' : '已回绝'
         })).reverse();
+      }, err => {
+        this.$message.error('初始化失败:' + err.msg);
+      }).finally(_ => {
+        loading.close();
       })
     }
   }

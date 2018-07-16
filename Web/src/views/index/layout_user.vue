@@ -144,6 +144,12 @@
       applyCommunity() {
         this.$refs['myCommunity'].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock      : true,
+              text      : '提交申请中...',
+              spinner   : 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$.ajax.post('/community', JSON.stringify({
               name       : this.myCommunity.name,
               description: this.myCommunity.description,
@@ -158,6 +164,12 @@
       subMod() {
         this.$refs['communityInfo'].validate((valid) => {
           if (valid) {
+            const loading = this.$loading({
+              lock      : true,
+              text      : '提交申请中...',
+              spinner   : 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.$.ajax.post('/community/mod', JSON.stringify({
               community_id: this.myCommunity.id,
               name        : this.myCommunity.name,
@@ -193,7 +205,12 @@
         this.$router.push('/login');
         return;
       }
-      this.fullscreenLoading = true;
+      const loading = this.$loading({
+        lock      : true,
+        text      : '初始化中...',
+        spinner   : 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       this.$.ajax.get('/community').then(res => {
         console.log('社团信息：', res);
         this.myCommunity = res || {};
@@ -211,7 +228,7 @@
       }, err => {
         this.$message.error('初始化失败：', err.msg);
       }).finally(_ => {
-        this.fullscreenLoading = false;
+        loading.close();
       })
 
 
