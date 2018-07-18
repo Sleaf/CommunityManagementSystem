@@ -269,6 +269,10 @@
       font-size 1.5em
       color darkgray
       align-items center
+      height 18em
+      position absolute
+      top 50%
+      transform translateY(-50%)
       .tips
         font-size .5em
         color darkgray
@@ -293,7 +297,7 @@
           vertical-align: top;
 
     .activity
-      margin-top 1em
+      margin 2em 0 2em 0
 
   .el-footer
     text-align center
